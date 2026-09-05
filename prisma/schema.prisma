@@ -1,0 +1,215 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum MenuItemCategory {
+  Food
+  Drink
+}
+
+enum OrderStatus {
+  PLACED
+  PREPARING
+  DELAYED
+  SERVED
+  PAID
+}
+
+enum OrderItemStatus {
+  PENDING
+  PREPARED
+  DELAYED
+}
+
+enum ComplaintStatus {
+  OPEN
+  RESOLVED
+}
+
+enum PaymentStatus {
+  SUCCESSFUL
+}
+
+enum PaymentMethod {
+  Card
+  Transfer
+  Cash
+}
+
+model Restaurant {
+  RestaurantID           String   @id
+  RestaurantName         String
+  RestaurantAddress      String
+  RestaurantPhone        String
+  RestaurantOpeningHours String
+  RestaurantStatus       String
+  RestaurantRating       Float    @default(0)
+
+  Customers  Customer[]
+  Waiters    Waiter[]
+  Chefs      Chef[]
+  Bartenders Bartender[]
+  MenuItems  MenuItem[]
+
+  @@map("restaurants")
+}
+
+model Customer {
+  CustomerID      String @id
+  CustomerName    String
+  CustomerPhone   String
+  CustomerEmail   String
+  CustomerTableNo String
+  RestaurantID    String
+
+  Restaurant Restaurant  @relation(fields: [RestaurantID], references: [RestaurantID])
+  Orders     Order[]
+  Complaints Complaint[]
+  Ratings    Rating[]
+
+  @@map("customers")
+}
+
+model Waiter {
+  WaiterID     String @id
+  WaiterName   String
+  WaiterPhone  String
+  WaiterShift  String
+  RestaurantID String
+
+  Restaurant Restaurant @relation(fields: [RestaurantID], references: [RestaurantID])
+  Orders     Order[]
+
+  @@map("waiters")
+}
+
+model Chef {
+  ChefID        String @id
+  ChefName      String
+  ChefSpecialty String
+  ChefPhone     String
+  ChefShift     String
+  RestaurantID  String
+
+  Restaurant Restaurant @relation(fields: [RestaurantID], references: [RestaurantID])
+  Orders     Order[]
+
+  @@map("chefs")
+}
+
+model Bartender {
+  BartenderID     String @id
+  BartenderName   String
+  BartenderPhone  String
+  BartenderShift  String
+  BartenderStatus String
+  RestaurantID    String
+
+  Restaurant Restaurant @relation(fields: [RestaurantID], references: [RestaurantID])
+  Orders     Order[]
+
+  @@map("bartenders")
+}
+
+model MenuItem {
+  MenuItemID          String           @id
+  MenuItemName        String
+  MenuItemDescription String
+  MenuItemCategory    MenuItemCategory
+  MenuItemPrice       Int
+  MenuItemPrepTime    Int
+  MenuItemAvailable   Boolean          @default(true)
+  RestaurantID        String
+
+  Restaurant Restaurant  @relation(fields: [RestaurantID], references: [RestaurantID])
+  OrderItems OrderItem[]
+
+  @@map("menu_items")
+}
+
+model Order {
+  OrderID         String      @id
+  OrderDateTime   DateTime
+  OrderStatus     OrderStatus @default(PLACED)
+  OrderAmount     Int
+  OrderWaitTime   Int
+  OrderPreparingAt DateTime?
+  OrderServedAt   DateTime?
+  CustomerID      String
+  WaiterID        String?
+  ChefID          String?
+  BartenderID     String?
+
+  Customer  Customer   @relation(fields: [CustomerID], references: [CustomerID])
+  Waiter    Waiter?    @relation(fields: [WaiterID], references: [WaiterID])
+  Chef      Chef?      @relation(fields: [ChefID], references: [ChefID])
+  Bartender Bartender? @relation(fields: [BartenderID], references: [BartenderID])
+
+  OrderItems OrderItem[]
+  Payment    Payment?
+  Complaints Complaint[]
+  Rating     Rating?
+
+  @@map("orders")
+}
+
+model OrderItem {
+  OrderItemID       String          @id
+  OrderItemQuantity Int
+  OrderItemSubTotal Int
+  OrderItemStatus   OrderItemStatus @default(PENDING)
+  OrderID           String
+  MenuItemID        String
+
+  Order    Order    @relation(fields: [OrderID], references: [OrderID])
+  MenuItem MenuItem @relation(fields: [MenuItemID], references: [MenuItemID])
+
+  @@map("order_items")
+}
+
+model Payment {
+  PaymentID       String        @id
+  PaymentAmount   Int
+  PaymentMethod   PaymentMethod
+  PaymentDateTime DateTime
+  PaymentStatus   PaymentStatus @default(SUCCESSFUL)
+  OrderID         String        @unique
+
+  Order Order @relation(fields: [OrderID], references: [OrderID])
+
+  @@map("payments")
+}
+
+model Complaint {
+  ComplaintID          String          @id
+  ComplaintDescription String
+  ComplaintDateTime    DateTime
+  ComplaintStatus      ComplaintStatus @default(OPEN)
+  OrderID              String
+  CustomerID           String
+
+  Order    Order    @relation(fields: [OrderID], references: [OrderID])
+  Customer Customer @relation(fields: [CustomerID], references: [CustomerID])
+
+  @@map("complaints")
+}
+
+model Rating {
+  RatingID       String   @id
+  RatingScore    Int
+  RatingComment  String?
+  RatingDateTime DateTime
+  OrderID        String   @unique
+  CustomerID     String
+
+  Order    Order    @relation(fields: [OrderID], references: [OrderID])
+  Customer Customer @relation(fields: [CustomerID], references: [CustomerID])
+
+  @@map("ratings")
+}
