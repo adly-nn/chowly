@@ -43,13 +43,13 @@ enum PaymentMethod {
 }
 
 model Restaurant {
-  RestaurantID           String   @id
+  RestaurantID           String @id
   RestaurantName         String
   RestaurantAddress      String
   RestaurantPhone        String
   RestaurantOpeningHours String
   RestaurantStatus       String
-  RestaurantRating       Float    @default(0)
+  RestaurantRating       Float  @default(0)
 
   Customers  Customer[]
   Waiters    Waiter[]
@@ -134,17 +134,17 @@ model MenuItem {
 }
 
 model Order {
-  OrderID         String      @id
-  OrderDateTime   DateTime
-  OrderStatus     OrderStatus @default(PLACED)
-  OrderAmount     Int
-  OrderWaitTime   Int
+  OrderID          String      @id
+  OrderDateTime    DateTime
+  OrderStatus      OrderStatus @default(PLACED)
+  OrderAmount      Int
+  OrderWaitTime    Int
   OrderPreparingAt DateTime?
-  OrderServedAt   DateTime?
-  CustomerID      String
-  WaiterID        String?
-  ChefID          String?
-  BartenderID     String?
+  OrderServedAt    DateTime?
+  CustomerID       String
+  WaiterID         String?
+  ChefID           String?
+  BartenderID      String?
 
   Customer  Customer   @relation(fields: [CustomerID], references: [CustomerID])
   Waiter    Waiter?    @relation(fields: [WaiterID], references: [WaiterID])
