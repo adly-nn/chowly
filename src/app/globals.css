@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+:root {
+  --chow-green: #0c513f;
+  --chow-green-deep: #083a2d;
+  --chow-green-wash: #e8f1ed;
+  --chow-yellow: #ffc501;
+  --chow-ink: #12211c;
+  --chow-muted: #6b7c76;
+  --chow-surface: #ffffff;
+  --chow-page: #f6f8f7;
+  --chow-alert: #c0341a;
+  --chow-alert-wash: #fbe9e5;
+}
+
+@theme inline {
+  --color-chow-green: var(--chow-green);
+  --color-chow-green-deep: var(--chow-green-deep);
+  --color-chow-green-wash: var(--chow-green-wash);
+  --color-chow-yellow: var(--chow-yellow);
+  --color-chow-ink: var(--chow-ink);
+  --color-chow-muted: var(--chow-muted);
+  --color-chow-surface: var(--chow-surface);
+  --color-chow-page: var(--chow-page);
+  --color-chow-alert: var(--chow-alert);
+  --color-chow-alert-wash: var(--chow-alert-wash);
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: var(--chow-page);
+  color: var(--chow-ink);
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--chow-green);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
