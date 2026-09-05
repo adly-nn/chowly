@@ -9,6 +9,7 @@
     "lint": "eslint",
     "db:seed": "tsx prisma/seed.ts",
     "db:migrate": "prisma migrate dev",
+    "db:verify": "tsx scripts/check-integrity.ts",
     "postinstall": "prisma generate"
   },
   "prisma": {
