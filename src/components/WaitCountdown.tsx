@@ -16,12 +16,18 @@ function formatDuration(ms: number): string {
  * live-counting wait timer that shifts from green through yellow to red as
  * the estimate approaches and passes zero. Yellow is only ever a fill with
  * dark text on it, never text on a light background, so it stays readable.
+ *
+ * Renders a static placeholder until mounted: computing Date.now() during
+ * the initial render would make the server-rendered HTML and the client's
+ * first hydration pass disagree (a few hundred ms apart), which React
+ * reports as a hydration mismatch. The real value is filled in by the
+ * effect below, immediately after mount.
  */
 export function WaitCountdown({ deadline }: { deadline: string }) {
-  const deadlineMs = new Date(deadline).getTime();
-  const [remaining, setRemaining] = useState(() => deadlineMs - Date.now());
+  const [remaining, setRemaining] = useState<number | null>(null);
 
   useEffect(() => {
+    const deadlineMs = new Date(deadline).getTime();
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     const tick = () => setRemaining(deadlineMs - Date.now());
     tick();
@@ -31,7 +37,18 @@ export function WaitCountdown({ deadline }: { deadline: string }) {
     const intervalMs = media.matches ? 30_000 : 1_000;
     const id = window.setInterval(tick, intervalMs);
     return () => window.clearInterval(id);
-  }, [deadlineMs]);
+  }, [deadline]);
+
+  if (remaining === null) {
+    return (
+      <div className="rounded-xl bg-chow-green-wash px-5 py-4 text-chow-green">
+        <p className="text-xs font-semibold uppercase tracking-wide opacity-80">Estimated wait</p>
+        <p className="tabular text-4xl font-bold leading-tight" style={{ letterSpacing: "-0.02em" }}>
+          --:--
+        </p>
+      </div>
+    );
+  }
 
   const isPast = remaining <= 0;
   const isWarning = !isPast && remaining <= 5 * 60_000;
