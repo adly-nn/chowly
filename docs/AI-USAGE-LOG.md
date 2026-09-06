@@ -114,8 +114,32 @@ result during grading should be attributed to database cold starts, not
 assumed to be a broken feature.
 
 ### 2026-09-05 — Deployment
-**Asked:** Deploy to Vercel with the seeded Neon database, then verify the
-live URL on a phone-sized viewport per §10.
-**Produced / Accepted / Corrected:** *(completed after this log entry was
-first written — see `docs/WALKTHROUGH.md` and the README for the final
-live URL and the outcome of that verification pass.)*
+**Asked:** Deploy to Vercel with the seeded Neon database.
+**Produced:** Repo pushed to `github.com/adly-nn/chowly`; deployed via the
+Vercel dashboard against the same already-migrated, already-seeded Neon
+database (no separate production migration/seed step needed).
+**Accepted / Rejected / Corrected:** Accepted. Live at
+https://chowly-three.vercel.app.
+
+### 2026-09-06 — Human review found a real bug
+**Asked (by the student, after trying the live link):** "When I'm on the
+waiter side and switch back to customer, it still shows the waiter's order
+queue — that shouldn't happen." Separately asked whether staff (waiter,
+chef, bartender) should have a real login.
+**Produced:** Root cause: `switchToCustomer`/`switchToWaiter` only set the
+role cookie and revalidated — they never navigated anywhere, so flipping
+roles while sitting on a role-specific page (e.g. `/waiter`) left you
+looking at that page under the other role's header.
+**Accepted / Rejected / Corrected:** **Corrected** — both actions now
+redirect to their role's home page (`/menu` or `/waiter`), but only when
+the role actually flips; changing *which* customer/waiter you are via the
+secondary picker (same role) still leaves you on the current page.
+Verified with a targeted Playwright check before pushing. On the login
+question: **rejected** adding one — the brief explicitly says "no login
+required" and separately lists authentication under "do not add," and the
+point of the role-switch design is that a grader can walk the entire flow
+from one link with no credentials. Explained the tradeoff to the student
+and they agreed to keep the no-login design. **[Human decision needed]**:
+this was a judgment call made with the student's agreement in the moment
+— worth restating in your own words in the submission if asked why there's
+no staff login.

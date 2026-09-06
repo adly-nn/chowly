@@ -8,7 +8,7 @@ records which chef and bartender prepared it, and marks it served. Built
 for a Univaciti / TeSA Africa assignment on top of an already-approved
 eleven-entity data model.
 
-**Live URL:** _to be filled in after deployment_
+**Live URL:** https://chowly-three.vercel.app
 
 ## Stack
 

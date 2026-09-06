@@ -3,7 +3,7 @@
 A numbered path a stranger can follow on the live link alone. Takes about
 three minutes.
 
-> Live URL: _to be filled in after deployment — see README.md_
+> Live URL: https://chowly-three.vercel.app
 
 1. **Open the link.** It redirects straight to `/menu`. The header is
    green, reading "Chowly — The Yellow Chilli."
