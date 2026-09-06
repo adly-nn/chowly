@@ -3,18 +3,19 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  const restaurant = {
+    RestaurantID: "R001",
+    RestaurantName: "The Yellow Chilli",
+    RestaurantAddress: "12 Adeola Odeku Street, Victoria Island, Lagos",
+    RestaurantPhone: "+234 803 123 4567",
+    RestaurantOpeningHours: "9:00am - 10:00pm daily",
+    RestaurantStatus: "OPEN",
+    RestaurantRating: 4.5,
+  };
   await prisma.restaurant.upsert({
-    where: { RestaurantID: "R001" },
-    update: {},
-    create: {
-      RestaurantID: "R001",
-      RestaurantName: "The Yellow Chilli",
-      RestaurantAddress: "12 Adeola Odeku Street, Victoria Island, Lagos",
-      RestaurantPhone: "+234 803 123 4567",
-      RestaurantOpeningHours: "9:00am - 10:00pm daily",
-      RestaurantStatus: "OPEN",
-      RestaurantRating: 4.5,
-    },
+    where: { RestaurantID: restaurant.RestaurantID },
+    update: restaurant,
+    create: restaurant,
   });
 
   const customers = [
@@ -25,7 +26,7 @@ async function main() {
   for (const c of customers) {
     await prisma.customer.upsert({
       where: { CustomerID: c.CustomerID },
-      update: {},
+      update: c,
       create: { ...c, RestaurantID: "R001" },
     });
   }
@@ -38,7 +39,7 @@ async function main() {
   for (const w of waiters) {
     await prisma.waiter.upsert({
       where: { WaiterID: w.WaiterID },
-      update: {},
+      update: w,
       create: { ...w, RestaurantID: "R001" },
     });
   }
@@ -51,7 +52,7 @@ async function main() {
   for (const c of chefs) {
     await prisma.chef.upsert({
       where: { ChefID: c.ChefID },
-      update: {},
+      update: c,
       create: { ...c, RestaurantID: "R001" },
     });
   }
@@ -64,45 +65,45 @@ async function main() {
   for (const b of bartenders) {
     await prisma.bartender.upsert({
       where: { BartenderID: b.BartenderID },
-      update: {},
+      update: b,
       create: { ...b, RestaurantID: "R001" },
     });
   }
 
   const foodItems = [
-    { MenuItemID: "M001", MenuItemName: "Jollof Rice and Chicken", MenuItemDescription: "Smoky party-style jollof rice with grilled chicken.", MenuItemPrice: 7500, MenuItemPrepTime: 25, MenuItemAvailable: true },
-    { MenuItemID: "M002", MenuItemName: "Pepper Soup", MenuItemDescription: "Spicy goat meat pepper soup, served hot.", MenuItemPrice: 6000, MenuItemPrepTime: 20, MenuItemAvailable: true },
-    { MenuItemID: "M003", MenuItemName: "Egusi Soup and Pounded Yam", MenuItemDescription: "Melon-seed soup with assorted meat, served with pounded yam.", MenuItemPrice: 6500, MenuItemPrepTime: 30, MenuItemAvailable: true },
-    { MenuItemID: "M004", MenuItemName: "Suya Platter", MenuItemDescription: "Grilled skewered beef in a spiced peanut suya rub.", MenuItemPrice: 5000, MenuItemPrepTime: 15, MenuItemAvailable: true },
-    { MenuItemID: "M005", MenuItemName: "Fried Rice and Turkey", MenuItemDescription: "Vegetable fried rice with a roasted turkey portion.", MenuItemPrice: 7000, MenuItemPrepTime: 25, MenuItemAvailable: true },
-    { MenuItemID: "M006", MenuItemName: "Nkwobi", MenuItemDescription: "Spiced cow-foot delicacy in a rich palm-oil sauce.", MenuItemPrice: 5500, MenuItemPrepTime: 20, MenuItemAvailable: false },
-    { MenuItemID: "M007", MenuItemName: "Moi Moi", MenuItemDescription: "Steamed bean pudding with egg and fish.", MenuItemPrice: 2500, MenuItemPrepTime: 15, MenuItemAvailable: true },
-    { MenuItemID: "M008", MenuItemName: "Asun", MenuItemDescription: "Spicy chopped grilled goat meat, peppered and smoky.", MenuItemPrice: 6000, MenuItemPrepTime: 15, MenuItemAvailable: true },
-    { MenuItemID: "M009", MenuItemName: "Efo Riro with Semo", MenuItemDescription: "Rich vegetable soup with assorted meat and semovita.", MenuItemPrice: 6000, MenuItemPrepTime: 25, MenuItemAvailable: true },
-    { MenuItemID: "M010", MenuItemName: "Chicken Shawarma", MenuItemDescription: "Grilled chicken shawarma wrap with house sauce.", MenuItemPrice: 3500, MenuItemPrepTime: 10, MenuItemAvailable: true },
+    { MenuItemID: "M001", MenuItemName: "Jollof Rice and Chicken", MenuItemDescription: "Smoky party-style jollof rice with grilled chicken.", MenuItemPrice: 7500, MenuItemPrepTime: 25, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m001.jpg" },
+    { MenuItemID: "M002", MenuItemName: "Pepper Soup", MenuItemDescription: "Spicy goat meat pepper soup, served hot.", MenuItemPrice: 6000, MenuItemPrepTime: 20, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m002.jpg" },
+    { MenuItemID: "M003", MenuItemName: "Egusi Soup and Pounded Yam", MenuItemDescription: "Melon-seed soup with assorted meat, served with pounded yam.", MenuItemPrice: 6500, MenuItemPrepTime: 30, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m003.jpg" },
+    { MenuItemID: "M004", MenuItemName: "Suya Platter", MenuItemDescription: "Grilled skewered beef in a spiced peanut suya rub.", MenuItemPrice: 5000, MenuItemPrepTime: 15, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m004.jpg" },
+    { MenuItemID: "M005", MenuItemName: "Fried Rice and Turkey", MenuItemDescription: "Vegetable fried rice with a roasted turkey portion.", MenuItemPrice: 7000, MenuItemPrepTime: 25, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m005.jpg" },
+    { MenuItemID: "M006", MenuItemName: "Nkwobi", MenuItemDescription: "Spiced cow-foot delicacy in a rich palm-oil sauce.", MenuItemPrice: 5500, MenuItemPrepTime: 20, MenuItemAvailable: false, MenuItemImageUrl: "/menu/m006.jpg" },
+    { MenuItemID: "M007", MenuItemName: "Moi Moi", MenuItemDescription: "Steamed bean pudding with egg and fish.", MenuItemPrice: 2500, MenuItemPrepTime: 15, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m007.jpg" },
+    { MenuItemID: "M008", MenuItemName: "Asun", MenuItemDescription: "Spicy chopped grilled goat meat, peppered and smoky.", MenuItemPrice: 6000, MenuItemPrepTime: 15, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m008.jpg" },
+    { MenuItemID: "M009", MenuItemName: "Efo Riro with Semo", MenuItemDescription: "Rich vegetable soup with assorted meat and semovita.", MenuItemPrice: 6000, MenuItemPrepTime: 25, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m009.jpg" },
+    { MenuItemID: "M010", MenuItemName: "Chicken Shawarma", MenuItemDescription: "Grilled chicken shawarma wrap with house sauce.", MenuItemPrice: 3500, MenuItemPrepTime: 10, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m010.jpg" },
   ];
 
   const drinkItems = [
-    { MenuItemID: "M011", MenuItemName: "Chapman", MenuItemDescription: "Nigeria's classic bittersweet mocktail, served chilled.", MenuItemPrice: 3000, MenuItemPrepTime: 10, MenuItemAvailable: true },
-    { MenuItemID: "M012", MenuItemName: "Zobo", MenuItemDescription: "Hibiscus and spice cooler, served ice cold.", MenuItemPrice: 1500, MenuItemPrepTime: 5, MenuItemAvailable: true },
-    { MenuItemID: "M013", MenuItemName: "Chilled Malt", MenuItemDescription: "A cold bottle of malt drink.", MenuItemPrice: 1200, MenuItemPrepTime: 2, MenuItemAvailable: true },
-    { MenuItemID: "M014", MenuItemName: "Fresh Orange Juice", MenuItemDescription: "Freshly squeezed orange juice, no added sugar.", MenuItemPrice: 2000, MenuItemPrepTime: 5, MenuItemAvailable: true },
-    { MenuItemID: "M015", MenuItemName: "Fresh Palm Wine", MenuItemDescription: "Locally tapped palm wine, served fresh.", MenuItemPrice: 2500, MenuItemPrepTime: 5, MenuItemAvailable: true },
-    { MenuItemID: "M016", MenuItemName: "Tropical Smoothie", MenuItemDescription: "Blended pineapple, mango and watermelon.", MenuItemPrice: 3000, MenuItemPrepTime: 8, MenuItemAvailable: true },
-    { MenuItemID: "M017", MenuItemName: "Soft Drink", MenuItemDescription: "Coke, Fanta or Sprite, ice cold.", MenuItemPrice: 1000, MenuItemPrepTime: 2, MenuItemAvailable: true },
+    { MenuItemID: "M011", MenuItemName: "Chapman", MenuItemDescription: "Nigeria's classic bittersweet mocktail, served chilled.", MenuItemPrice: 3000, MenuItemPrepTime: 10, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m011.jpg" },
+    { MenuItemID: "M012", MenuItemName: "Zobo", MenuItemDescription: "Hibiscus and spice cooler, served ice cold.", MenuItemPrice: 1500, MenuItemPrepTime: 5, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m012.jpg" },
+    { MenuItemID: "M013", MenuItemName: "Chilled Malt", MenuItemDescription: "A cold bottle of malt drink.", MenuItemPrice: 1200, MenuItemPrepTime: 2, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m013.jpg" },
+    { MenuItemID: "M014", MenuItemName: "Fresh Orange Juice", MenuItemDescription: "Freshly squeezed orange juice, no added sugar.", MenuItemPrice: 2000, MenuItemPrepTime: 5, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m014.jpg" },
+    { MenuItemID: "M015", MenuItemName: "Fresh Palm Wine", MenuItemDescription: "Locally tapped palm wine, served fresh.", MenuItemPrice: 2500, MenuItemPrepTime: 5, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m015.jpg" },
+    { MenuItemID: "M016", MenuItemName: "Tropical Smoothie", MenuItemDescription: "Blended pineapple, mango and watermelon.", MenuItemPrice: 3000, MenuItemPrepTime: 8, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m016.jpg" },
+    { MenuItemID: "M017", MenuItemName: "Soft Drink", MenuItemDescription: "Coke, Fanta or Sprite, ice cold.", MenuItemPrice: 1000, MenuItemPrepTime: 2, MenuItemAvailable: true, MenuItemImageUrl: "/menu/m017.jpg" },
   ];
 
   for (const item of foodItems) {
     await prisma.menuItem.upsert({
       where: { MenuItemID: item.MenuItemID },
-      update: {},
+      update: { ...item, MenuItemCategory: "Food" },
       create: { ...item, MenuItemCategory: "Food", RestaurantID: "R001" },
     });
   }
   for (const item of drinkItems) {
     await prisma.menuItem.upsert({
       where: { MenuItemID: item.MenuItemID },
-      update: {},
+      update: { ...item, MenuItemCategory: "Drink" },
       create: { ...item, MenuItemCategory: "Drink", RestaurantID: "R001" },
     });
   }

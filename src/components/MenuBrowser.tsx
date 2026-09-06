@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
+import Image from "next/image";
 import { createOrder } from "@/actions/orders";
 import { computeWaitTime } from "@/lib/wait-time";
 import { formatNaira } from "@/lib/money";
@@ -13,6 +14,7 @@ interface MenuItemVM {
   MenuItemPrice: number;
   MenuItemPrepTime: number;
   MenuItemAvailable: boolean;
+  MenuItemImageUrl: string | null;
 }
 
 export function MenuBrowser({ items, queueCount }: { items: MenuItemVM[]; queueCount: number }) {
@@ -130,50 +132,64 @@ function MenuCard({
   const unavailable = !item.MenuItemAvailable;
 
   return (
-    <div className={`rounded-xl border border-black/5 bg-chow-surface p-4 ${unavailable ? "opacity-50" : ""}`}>
-      <h3 className="font-semibold text-chow-ink">{item.MenuItemName}</h3>
-      <p className="mt-0.5 text-sm text-chow-muted">{item.MenuItemDescription}</p>
-
-      <div className="mt-3 flex items-center justify-between">
-        <div className="flex items-baseline gap-2">
-          <span className="tabular font-bold text-chow-ink">{formatNaira(item.MenuItemPrice)}</span>
-          <span className="tabular text-xs text-chow-muted">{item.MenuItemPrepTime} min</span>
+    <div className={`flex gap-3 rounded-xl border border-black/5 bg-chow-surface p-4 ${unavailable ? "opacity-50" : ""}`}>
+      {item.MenuItemImageUrl && (
+        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-chow-green-wash">
+          <Image
+            src={item.MenuItemImageUrl}
+            alt={item.MenuItemName}
+            fill
+            sizes="80px"
+            className="object-cover"
+          />
         </div>
+      )}
 
-        {unavailable ? (
-          <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-medium text-chow-muted">
-            Unavailable
-          </span>
-        ) : quantity > 0 ? (
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => onSetQuantity(quantity - 1)}
-              aria-label={`Remove one ${item.MenuItemName}`}
-              className="h-7 w-7 rounded-full bg-chow-green-wash font-semibold text-chow-green"
-            >
-              −
-            </button>
-            <span className="tabular w-4 text-center font-semibold">{quantity}</span>
-            <button
-              type="button"
-              onClick={() => onSetQuantity(quantity + 1)}
-              aria-label={`Add one more ${item.MenuItemName}`}
-              className="h-7 w-7 rounded-full bg-chow-green font-semibold text-white"
-            >
-              +
-            </button>
+      <div className="min-w-0 flex-1">
+        <h3 className="font-semibold text-chow-ink">{item.MenuItemName}</h3>
+        <p className="mt-0.5 text-sm text-chow-muted">{item.MenuItemDescription}</p>
+
+        <div className="mt-3 flex items-center justify-between">
+          <div className="flex items-baseline gap-2">
+            <span className="tabular font-bold text-chow-ink">{formatNaira(item.MenuItemPrice)}</span>
+            <span className="tabular text-xs text-chow-muted">{item.MenuItemPrepTime} min</span>
           </div>
-        ) : (
-          <button
-            type="button"
-            onClick={onAdd}
-            aria-label={`Add ${item.MenuItemName} to cart`}
-            className="rounded-lg bg-chow-yellow px-3 py-1.5 text-sm font-semibold text-chow-ink"
-          >
-            Add
-          </button>
-        )}
+
+          {unavailable ? (
+            <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-medium text-chow-muted">
+              Unavailable
+            </span>
+          ) : quantity > 0 ? (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onSetQuantity(quantity - 1)}
+                aria-label={`Remove one ${item.MenuItemName}`}
+                className="h-7 w-7 rounded-full bg-chow-green-wash font-semibold text-chow-green"
+              >
+                −
+              </button>
+              <span className="tabular w-4 text-center font-semibold">{quantity}</span>
+              <button
+                type="button"
+                onClick={() => onSetQuantity(quantity + 1)}
+                aria-label={`Add one more ${item.MenuItemName}`}
+                className="h-7 w-7 rounded-full bg-chow-green font-semibold text-white"
+              >
+                +
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={onAdd}
+              aria-label={`Add ${item.MenuItemName} to cart`}
+              className="rounded-lg bg-chow-yellow px-3 py-1.5 text-sm font-semibold text-chow-ink"
+            >
+              Add
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

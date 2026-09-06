@@ -125,6 +125,7 @@ model MenuItem {
   MenuItemPrice       Int
   MenuItemPrepTime    Int
   MenuItemAvailable   Boolean          @default(true)
+  MenuItemImageUrl    String?
   RestaurantID        String
 
   Restaurant Restaurant  @relation(fields: [RestaurantID], references: [RestaurantID])

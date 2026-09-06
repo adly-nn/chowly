@@ -66,6 +66,18 @@ multiple restaurants via the `RestaurantID` foreign keys throughout, so
 nothing about the model itself was narrowed — only what the seed script
 populates and what the UI assumes as "the" restaurant.
 
+## 8. `MenuItemImageUrl` added to `MenuItem`
+
+Added at the student's request so each menu card can show a real photo.
+Nullable, storing a repo-relative path (`/menu/m001.jpg`) into
+`public/menu/` rather than an external URL — the app serves the images
+itself instead of hotlinking a third party, so the live site never breaks
+if some other host goes down or blocks hotlinking. All 17 seeded items
+have an image; the field is nullable so the UI degrades gracefully (card
+without a photo) if an item is ever added without one. Source and license
+for every image is in `docs/IMAGE-CREDITS.md` — all are free-licensed
+(CC0 / CC BY / CC BY-SA) photos from Wikimedia Commons.
+
 ## Tooling note (not a data-model change)
 
 Prisma and `@prisma/client` are pinned to the stable `6.19.3` release
