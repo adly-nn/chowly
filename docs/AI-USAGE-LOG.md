@@ -143,3 +143,31 @@ and they agreed to keep the no-login design. **[Human decision needed]**:
 this was a judgment call made with the student's agreement in the moment
 — worth restating in your own words in the submission if asked why there's
 no staff login.
+
+### 2026-09-06 — Menu item photos
+**Asked:** Add an image to every menu item.
+**Produced:** Offered a choice — real food photos (needs sourcing/hosting)
+vs. styled food-emoji tiles (faster, zero licensing risk) — the student
+picked real photos. Used the Wikimedia Commons search API directly
+(scriptable, licensed metadata included) rather than a generic image
+search, found a free-licensed (CC0/CC BY/CC BY-SA) photo for all 17 items,
+downloaded them into `public/menu/` so the live app self-hosts them
+instead of hotlinking, added a nullable `MenuItemImageUrl` column, and
+wired `next/image` into the menu cards.
+**Accepted / Rejected / Corrected:** Mostly accepted first-pass. Two
+self-corrections: (1) the seed script's upserts previously did nothing on
+conflict (`update: {}`), so re-running it against the already-seeded
+production database wouldn't have actually attached the new image paths —
+rewrote every upsert to update on conflict too, which is also just a
+better seed script generally. (2) A first screenshot of the live site
+showed several images still blank; rather than assume that was fine,
+checked further and found it was `next/image` lazy-loading racing the
+screenshot on a cold Vercel image-optimization cache, not a real failure —
+confirmed by scrolling the full page and checking each image's actual
+pixel data, which came back 17/17 loaded. Two matches are approximate
+rather than exact (documented in `docs/IMAGE-CREDITS.md`): the fried-rice
+photo shows chicken, not turkey, and the palm wine photo shows it served
+in a calabash bowl rather than a glass. **[Human decision needed]**:
+confirm you're comfortable with Commons-sourced stock photos standing in
+for "your" menu, and skim `docs/IMAGE-CREDITS.md` for the two approximate
+matches in case you'd rather swap them.
